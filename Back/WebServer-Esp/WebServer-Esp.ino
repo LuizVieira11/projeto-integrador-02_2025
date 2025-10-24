@@ -1,37 +1,73 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
+#include <ArduinoJson.h>
+#include <SPI.h>
+#include <LoRa.h>
 
+String itemCodigoBarras = "";
+
+// Wi-fi
 const char* SSID = "Gustav";
 const char* PASSWORD = "1109*Mafe";
 
-#ifndef LED_BUILTIN
-#define LED_BUILTIN 2
-#endif
+// Configuração dos pinos LoRa
+#define SS_PIN 5
+#define RST_PIN 14
+#define DIO0_PIN 2
+#define LORA_BAND 915E6 
 
 WebServer server(80);
 
-void handleLigar(){
-  digitalWrite(LED_BUILTIN, HIGH);
-  server.send(200, "text/plain", "LED aceso");
-  Serial.println("Comando '/ligar' recebido");
+void enviarLoRa(String mensagem) {
+  Serial.print("Enviando via LoRa: ");
+  Serial.println(mensagem);
+
+  LoRa.beginPacket();
+  LoRa.print(mensagem);
+  LoRa.endPacket();
+
+  Serial.println("Pacote enviado com sucesso!");
 }
 
-void handleDesligar(){
-  digitalWrite(LED_BUILTIN, LOW);
-  server.send(200, "text/plain", "LED apagado");
-  Serial.println("Comando '/desligar' recebido");
+void handleItemPost() {
+  // Verifica se o corpo da requisição (body) foi enviado
+  if (!server.hasArg("plain")) {
+    server.send(400, "application/json", "{\"error\":\"Body ausente\"}");
+    return;
+  }
+
+  String body = server.arg("plain");
+  Serial.println(body);
+
+  DynamicJsonDocument doc(128);
+
+  DeserializationError error = deserializeJson(doc, body);
+
+  if (error){
+    Serial.print("Erro na interpretação do JSON:");
+    Serial.println(error.c_str());
+    server.send(400, "application/json", "{\"error\":\"JSON invalido\"}");
+    return;
+  }
+
+  itemCodigoBarras = doc["codigo_barras"].as<String>();
+  Serial.print("Código recebido: ");
+  Serial.println(itemCodigoBarras);
+
+  enviarLoRa(itemCodigoBarras);
+
+  String response = "Item '" + itemCodigoBarras + "' enviado via LoRa";
+  server.send(200, "text/plain", response);
 }
 
-void handleNotFound(){
-  server.send(404, "text/plain", "Nao encontrado");
+void handleNotFound() {
+  server.send(404, "text/plain", "Rota não encontrada");
 }
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
 
   Serial.print("Conectando Wi-Fi...");
   WiFi.begin(SSID, PASSWORD);
@@ -49,9 +85,18 @@ void setup() {
     return;
   }
   Serial.println("mDNS iniciado. Acesse via http://meu-esp.local");
+
+  Serial.println("Inicializando LoRa...");
+  LoRa.setPins(SS_PIN, RST_PIN, DIO0_PIN);
+  if (!LoRa.begin(LORA_BAND)) {
+    Serial.println("Falha ao iniciar LoRa. Verifique conexões e frequência.");
+    while (1);
+  }
+  Serial.println("LoRa iniciado com sucesso!");
   
-  server.on("/ligar", handleLigar);
-  server.on("/desligar", handleDesligar);
+  server.on("/item", HTTP_POST, handleItemPost);
+
+  server.onNotFound(handleNotFound);
 
   server.begin();
   Serial.println("Servidor HTTP iniciado!");
