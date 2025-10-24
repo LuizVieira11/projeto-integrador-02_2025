@@ -8,18 +8,19 @@
 String itemCodigoBarras = "";
 
 // Wi-fi
-const char* SSID = "Gustav";
-const char* PASSWORD = "1109*Mafe";
+const char *SSID = "Gustav";
+const char *PASSWORD = "1109*Mafe";
 
 // Configuração dos pinos LoRa
 #define SS_PIN 5
 #define RST_PIN 14
 #define DIO0_PIN 2
-#define LORA_BAND 915E6 
+#define LORA_BAND 915E6
 
 WebServer server(80);
 
-void enviarLoRa(String mensagem) {
+void enviarLoRa(String mensagem)
+{
   Serial.print("Enviando via LoRa: ");
   Serial.println(mensagem);
 
@@ -27,12 +28,14 @@ void enviarLoRa(String mensagem) {
   LoRa.print(mensagem);
   LoRa.endPacket();
 
-  Serial.println("Pacote enviado com sucesso!");
+  Serial.println("Pacote enviado");
 }
 
-void handleItemPost() {
+void handleItemPost()
+{
   // Verifica se o corpo da requisição (body) foi enviado
-  if (!server.hasArg("plain")) {
+  if (!server.hasArg("plain"))
+  {
     server.send(400, "application/json", "{\"error\":\"Body ausente\"}");
     return;
   }
@@ -44,7 +47,8 @@ void handleItemPost() {
 
   DeserializationError error = deserializeJson(doc, body);
 
-  if (error){
+  if (error)
+  {
     Serial.print("Erro na interpretação do JSON:");
     Serial.println(error.c_str());
     server.send(400, "application/json", "{\"error\":\"JSON invalido\"}");
@@ -61,26 +65,28 @@ void handleItemPost() {
   server.send(200, "text/plain", response);
 }
 
-void handleNotFound() {
+void handleNotFound()
+{
   server.send(404, "text/plain", "Rota não encontrada");
 }
 
-void setup() {
+void setup()
+{
   // put your setup code here, to run once:
   Serial.begin(115200);
 
   Serial.print("Conectando Wi-Fi...");
   WiFi.begin(SSID, PASSWORD);
-  while(WiFi.status() != WL_CONNECTED){
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
 
   Serial.println("\nWiFi conectado!");
-  Serial.print("Para controlar o LED, use o seguinte IP: ");
-  Serial.println(WiFi.localIP());
 
-  if (!MDNS.begin("meu-esp")) {
+  if (!MDNS.begin("meu-esp"))
+  {
     Serial.println("Erro ao configurar o mDNS!");
     return;
   }
@@ -88,12 +94,14 @@ void setup() {
 
   Serial.println("Inicializando LoRa...");
   LoRa.setPins(SS_PIN, RST_PIN, DIO0_PIN);
-  if (!LoRa.begin(LORA_BAND)) {
+  if (!LoRa.begin(LORA_BAND))
+  {
     Serial.println("Falha ao iniciar LoRa. Verifique conexões e frequência.");
-    while (1);
+    while (1)
+      ;
   }
   Serial.println("LoRa iniciado com sucesso!");
-  
+
   server.on("/item", HTTP_POST, handleItemPost);
 
   server.onNotFound(handleNotFound);
@@ -102,7 +110,8 @@ void setup() {
   Serial.println("Servidor HTTP iniciado!");
 }
 
-void loop() {
+void loop()
+{
   // put your main code here, to run repeatedly:
   server.handleClient();
 }
