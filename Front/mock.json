@@ -1,0 +1,34 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "description": "Projeto A",
+            "RFIDCode": "78 99 65 58"
+        },
+        {
+            "id": 2,
+            "description": "Projeto B",
+            "RFIDCode": "78 99 65 58"
+        },
+        {
+            "id": 3,
+            "description": "Projeto C",
+            "RFIDCode": "78 99 65 58"
+        },
+        {
+            "id": 4,
+            "description": "Projeto D",
+            "RFIDCode": "78 99 65 58"
+        },
+        {
+            "id": 5,
+            "description": "Projeto E",
+            "RFIDCode": "78 99 65 58"
+        },
+        {
+            "id": 6,
+            "description": "Projeto F",
+            "RFIDCode": "78 99 65 58"
+        }
+    ]
+}

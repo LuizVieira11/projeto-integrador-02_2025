@@ -6,6 +6,8 @@
 #define DIO0_PIN 2
 #define LORA_BAND 915E6 // 915 MHz — compatível com o Brasil e seu transmissor
 
+// Função de chamada dos leitores para validar as tags que estão em cada posição
+
 void setup()
 {
   Serial.begin(115200);
@@ -45,5 +47,6 @@ void loop()
     Serial.println();
     Serial.println("Mensagem recebida via LoRa:");
     Serial.println(received);
+    // Chama a função da lógica de prateleiras com a mensagem recebida como argumento
   }
 }
