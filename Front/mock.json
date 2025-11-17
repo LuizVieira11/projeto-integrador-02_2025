@@ -2,33 +2,27 @@
     "data": [
         {
             "id": 1,
+            "cor": "Verde",
             "description": "Projeto A",
-            "RFIDCode": "26 32 C8 01"
+            "RFIDCode": "89 69 C8 01"
         },
         {
             "id": 2,
+            "cor": "Azul",
             "description": "Projeto B",
-            "RFIDCode": "78 99 65 58"
+            "RFIDCode": "8E 39 C8 01"
         },
         {
             "id": 3,
+            "cor": "Vermelho",
             "description": "Projeto C",
-            "RFIDCode": "78 99 65 58"
+            "RFIDCode": "26 32 C8 01"
         },
         {
             "id": 4,
+            "cor": "Amarelo",
             "description": "Projeto D",
-            "RFIDCode": "78 99 65 58"
-        },
-        {
-            "id": 5,
-            "description": "Projeto E",
-            "RFIDCode": "78 99 65 58"
-        },
-        {
-            "id": 6,
-            "description": "Projeto F",
-            "RFIDCode": "78 99 65 58"
+            "RFIDCode": "53 5D C4 01"
         }
     ]
 }

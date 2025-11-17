@@ -8,17 +8,16 @@ with open('mock.json') as fp:
 
 projects = data["data"]
 
-
-url = "http://meu-esp.local"
+url = "http://meu-esp.local/item"
 
 print('--- Pesquisa de Ativos ---')
 
 while True:
     print('\nProjetos disponíveis:\n')
     for p in projects:
-        print(f'ID: {p["id"]}, Nome: {p["description"]}')
+        print(f'{p["id"]}) {p["cor"]}')
 
-    idProject = input('\nDigite o ID do projeto que deseja encontrar (ou "sair" para encerrar): ')
+    idProject = input('\nDigite o número correspondente cor que deseja encontrar (ou "sair" para encerrar): ')
     if idProject.lower() == "sair":
         print("Encerrando o programa...")
         break
@@ -29,12 +28,12 @@ while True:
             rfid_to_send = p["RFIDCode"]
             print('\n')
             print('--------------------------------')
-            print(f'RFID encontrado: {rfid_to_send}')
+            print(f'RFID enviado: {rfid_to_send}')
             print('--------------------------------')
             print('\n')
 
     if rfid_to_send:
-        payload = {"RFIDCode": rfid_to_send}
+        payload = {"codigo_barras": rfid_to_send}
         try:
             response = requests.post(url, json=payload, timeout=5)
             if response.status_code == 200:
