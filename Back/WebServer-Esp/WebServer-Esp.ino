@@ -8,7 +8,7 @@
 String itemCodigoBarras = "";
 
 // Wi-fi
-const char *SSID = "Gustav";
+const char *SSID = "Gustav1";
 const char *PASSWORD = "1109*Mafe";
 
 // Configuração dos pinos LoRa
@@ -93,6 +93,7 @@ void setup()
   Serial.println("mDNS iniciado. Acesse via http://meu-esp.local");
 
   Serial.println("Inicializando LoRa...");
+  SPI.begin(18, 19, 23, 5); // SCK, MISO, MOSI, SS
   LoRa.setPins(SS_PIN, RST_PIN, DIO0_PIN);
   if (!LoRa.begin(LORA_BAND))
   {

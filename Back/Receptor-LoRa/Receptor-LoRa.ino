@@ -4,7 +4,7 @@
 #define SS_PIN 5
 #define RST_PIN 14
 #define DIO0_PIN 2
-#define LORA_BAND 915E6 // 915 MHz — compatível com o Brasil e seu transmissor
+#define LORA_BAND 915E6
 
 // Função de chamada dos leitores para validar as tags que estão em cada posição
 
